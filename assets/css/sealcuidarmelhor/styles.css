@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+}
+footer {
+    margin-top: 20px;
+    width: 1300px;
+}
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.img-container {
+    text-align: center;
+    display: block;
+}
+
+.color-label-cuidar-melhor {
+    color: rgba(34, 34, 34, 0.623);
+    font-style: normal;
+    font-size: 14px;
+    line-height: 15px;
+    text-align: center;
+    letter-spacing: 0.5px;  
+    margin-top: 71px;
+}
+
+.seal-cuidar-melhor {
+    margin-top: 64px;
+    margin-bottom: 64px;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.assinatura-cuidar-melhor {
+    margin-top: 136px;
+    text-align: center;
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+.info-link-cuidar-melhor {
+    position: absolute;
+width: 193px;
+height: 14px;
+left: 24px;
+bottom: 76px;
+
+font-family: Arial;
+font-style: normal;
+
+font-size: 10px;
+line-height: 7px;
+display: flex;
+align-items: center;
+
+/* Black 87 */
+
+color: rgba(0, 0, 0, 0.87);
+}
+
+.link-selo-cuidar-melhor {
+    position: absolute;
+    width: 235px;
+    height: 9px;
+    left: 24px;
+    bottom: 64px;
+    font-family: Arial;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 9px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.87);
+}
