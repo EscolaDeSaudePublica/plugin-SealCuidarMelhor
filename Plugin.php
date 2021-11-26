@@ -3,6 +3,7 @@
 namespace SealCuidarMelhor;
 use \MapasCulturais\App;
 use MapasCulturais\Entities\Opportunity;
+use \MapasCulturais\i;
 
 class Plugin extends \SealModelTab\SealModelTemplatePlugin {
 
@@ -69,7 +70,23 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
         });
 
         $app->hook('GET(opportunity.allField)', function() use($app){
-            dump($this->data);
+            //dump($this->data);
+            //$opportunity = $app->repo('RegistrationFileConfiguration')->findBy(['owner' => $this->data['id']]);
+            $opportunity = $app->repo('Opportunity')->find($this->data['id']);
+            //dump($opportunity);
+            $name = [];
+
+            if(isset($opportunity->registrationFieldConfigurations)) {
+                foreach ($opportunity->registrationFieldConfigurations as $key => $value) {
+                    //dump($key.' - '.$value->title);
+                    $name[] = ['id' => $value->id, 'title' => $value->title];
+                }
+            }
+            if(is_array($name) && count($name) > 0) {
+                $this->json($name,200);
+            }else{
+                $this->errorJson(i::__('Ocorreu um erro inexperado'), 400);
+            }
         });
    }
 
