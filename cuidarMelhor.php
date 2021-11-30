@@ -1,3 +1,18 @@
+<?php
+namespace SealCuidarMelhor\Entities;
+
+use SealCuidarMelhor\Entities\CuidarMelhor;
+
+$seal = $app->repo('SealRelation')->find($id);
+
+$idOp = $seal->seal->opportunity; 
+
+if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
+
+    $msg = CuidarMelhor::message($seal, $idOp);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +52,9 @@
 
 <div>
     <p class="color-label-cuidar-melhor text-left">
-        <?php echo nl2br($msg) ?>
+    <?php if(isset($msg) && $msg !== '') {
+        echo $msg;
+    } ?>
     </p>
 </div>
 <div style=" margin-top: 136px;">
@@ -59,7 +76,7 @@
         </tr>
     </table>
 </div>
-<div style=" margin-top: 114px;">
+<div style=" margin-top: 90px;">
     <table style="width: 100%;">
         <tr>
             <td  style="width: 30%;" >
