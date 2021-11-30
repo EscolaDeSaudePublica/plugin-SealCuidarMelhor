@@ -4,6 +4,7 @@ namespace SealCuidarMelhor;
 use \MapasCulturais\App;
 use MapasCulturais\Entities\Opportunity;
 use \MapasCulturais\i;
+use MapasCulturais\Entities\SealMeta;
 
 class Plugin extends \SealModelTab\SealModelTemplatePlugin {
 
@@ -50,9 +51,7 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
 
         $app->hook('template(seal.<<edit>>.tab-about-service):after', function() use($app, $data){
             ini_set('display_errors', true);
-            
-            $listProject = [];
-            //dump($this->data['entity']->id);
+
             $entity = $app->repo('SealRelation')->findBy(['seal' => $this->data['entity']->id, 'status' => 1]);
 
             $opportunits = [];
@@ -63,36 +62,99 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
                     $opportunits[$entities->owner->id] = $entities->owner->name;
                }
             }
-            //dump($opportunits);
-
-            //die;
             $this->part('sealcuidarmelhor/options-opportunity', ['opportunits' => $opportunits]);
         });
 
-        $app->hook('GET(opportunity.allField)', function() use($app){
-            //dump($this->data);
-            //$opportunity = $app->repo('RegistrationFileConfiguration')->findBy(['owner' => $this->data['id']]);
-            $opportunity = $app->repo('Opportunity')->find($this->data['id']);
-            //dump($opportunity);
-            $name = [];
+        $app->hook('GET(seal.<<edit>>):before', function() use($app, $data){
+            $app->view->enqueueStyle('app', $data['name'], 'css/' . $data['css']);           
+        });        
 
-            if(isset($opportunity->registrationFieldConfigurations)) {
-                foreach ($opportunity->registrationFieldConfigurations as $key => $value) {
-                    //dump($key.' - '.$value->title);
-                    $name[] = ['id' => $value->id, 'title' => $value->title];
+        $app->hook('GET(opportunity.allField)', function() use($app){
+
+            if(isset($this->data['id']) && $this->data['id'] > 0) {
+                $opportunity = $app->repo('Opportunity')->find($this->data['id']);
+                $name = [];
+    
+                if(isset($opportunity->registrationFieldConfigurations)) {
+                    foreach ($opportunity->registrationFieldConfigurations as $key => $value) {
+                        $name[] = ['id' => $value->id, 'title' => $value->title];
+                    }
+                }
+                if(is_array($name) && count($name) > 0) {
+                    $this->json($name,200);
+                }else{
+                    $this->errorJson(i::__('Ocorreu um erro inexperado'), 400);
                 }
             }
-            if(is_array($name) && count($name) > 0) {
-                $this->json($name,200);
-            }else{
-                $this->errorJson(i::__('Ocorreu um erro inexperado'), 400);
+           
+        });
+
+        $app->hook('POST(seal.saveCuidarMelhor)', function() use($app){
+
+            $seal = $app->repo('Seal')->find($this->data['id']);
+            $sealMetaField = new SealMeta;
+            $sealMetaField->key = 'field';
+            $sealMetaField->value = $this->data['field'];
+            $sealMetaField->owner = $seal;
+
+            $sealMetaOp = new SealMeta;
+            $sealMetaOp->key = 'opportunity';
+            $sealMetaOp->value = $this->data['opportunity'];
+            $sealMetaOp->owner = $seal;
+
+            $app->em->persist($sealMetaField);
+            $app->em->persist($sealMetaOp);
+		    $app->em->flush();
+            $this->json(['title' => 'Sucesso', 'message' => 'Confirmado', 'type' => 'success', 'status' => 200], 200);
+            
+        });
+        
+        $app->hook('GET(seal.fieldSelect)', function() use($app){
+            $seal = $app->repo('Seal')->find($this->data['id']);
+            $sealMeta = $app->repo('SealMeta')->findBy([
+                'owner' => $seal
+            ]);
+            $idField = 0;
+            foreach ($sealMeta as $key => $fieldSeal) {
+
+                if($fieldSeal->key == 'field') {
+                    $idField = $fieldSeal->value;                    
+                }                
             }
+            
+            $meta = $app->repo('RegistrationFieldConfiguration')->find($idField);
+            if(isset($meta)) {
+                $this->json($meta->title);
+            }else{
+                $this->errorJson('Selecione um campo');
+            }
+           
         });
    }
 
     public function register() {
         // register metadata, taxonomies
+        ini_set('display_errors', true);
         $app = App::i();
         $app->registerController('selo', 'SealCuidarMelhor\Controllers\Selo');
+        $metadef = [
+            "label" => i::__("ID da oportunidade à qual o selo se refere", "seal-cuidar-melhor"),
+            "type" => "int",
+            "default" => 0
+        ];     
+        if( $this->registerSealMetadata("opportunity", $metadef) !== NULL ) {
+            $this->registerSealMetadata("opportunity", $metadef);
+        }
+        
+        $metadef = [
+            "label" => i::__("ID do campo que se refere na oportunidade", "seal-cuidar-melhor"),
+            "type" => "int",
+            "default" => 0
+        ]; 
+        
+        if( $this->registerSealMetadata("field", $metadef) !== NULL ) {
+            $this->registerSealMetadata("field", $metadef);
+        }
+    
     }
 }
