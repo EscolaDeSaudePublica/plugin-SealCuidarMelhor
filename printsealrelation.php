@@ -13,13 +13,30 @@ $mpdf = new Mpdf([
     'format' => 'A4',
     'default_font' => 'arial']);
 
-//$app->render($template);
 ob_start();
-// $template = PLUGINS_PATH.'SealCuidarMelhor/printsealrelation';
-// $content = $app->view->fetch($template);
 
 $mpdf->SetTitle('Mapa da Saúde - Relatório');
 $stylesheet = file_get_contents(PLUGINS_PATH.'SealCuidarMelhor/assets/css/sealcuidarmelhor/styles.css');
+$seal = $app->repo('SealRelation')->find($id);
+$idOp = $seal->seal->opportunity; 
+
+
+if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
+
+    if(isset($idOp) && !empty($idOp)) {
+        $opportunity = $app->repo('Opportunity')->find($idOp);
+        $registration = $app->repo('Registration')->findBy([
+                                                    'opportunity' => $opportunity,
+                                                    'owner' => $seal->owner_relation
+        ]);
+
+        $field = "field_{$seal->seal->field}";
+        $regMeta = $app->repo('RegistrationMeta')->findBy([
+            'owner' => $registration,
+            'key' => $field
+        ]);
+    }
+}
 include "cuidarMelhor.php";
 $html = ob_get_clean();
 $mpdf->WriteHTML($stylesheet,1);
