@@ -4,7 +4,7 @@ $app->view->enqueueScript('app', 'sealcuidarmelhor', '/js/sealcuidarmelhor/seal-
 
 <div>
     <hr>
-    <span>Selecione a oportunidade</span>
+    <span>Selecione a oportunidade</span> <br>
     <small class="registration-help">Escolha a Oportunidade e o campo para mostrar no certificado.</small>
     <select name="" id="selectOpportunitySeal" class="form-control">
         <option value="">--Selecione--</option>
@@ -23,18 +23,3 @@ $app->view->enqueueScript('app', 'sealcuidarmelhor', '/js/sealcuidarmelhor/seal-
         <i class="fa fa-save"></i> Confirmar campo
     </button>
 </div>
-
-<?php $this->applyTemplateHook('info-field-seal','begin'); ?>
-
-<div class="div-space-field-seal">
-    <div class="close-field-seal">
-        <a href="#" title="Excluir o campo" class="btn">
-            <i class="fa fa-times"></i>
-        </a>
-    </div>
-    <div class="space-field-seal">
-        <p class="info-field-seal"></p>
-    </div>
-</div>
-
-<?php $this->applyTemplateHook('info-field-seal','end'); ?>

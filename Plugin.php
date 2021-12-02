@@ -2,7 +2,6 @@
 
 namespace SealCuidarMelhor;
 use \MapasCulturais\App;
-use MapasCulturais\Entities\Opportunity;
 use \MapasCulturais\i;
 use MapasCulturais\Entities\SealMeta;
 
@@ -69,6 +68,7 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
             $app->view->enqueueStyle('app', $data['name'], 'css/' . $data['css']);           
         });        
 
+        //TODOS OS CAMPOS DA OPORTUNIDADE
         $app->hook('GET(opportunity.allField)', function() use($app){
 
             if(isset($this->data['id']) && $this->data['id'] > 0) {
@@ -89,6 +89,7 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
            
         });
 
+        //SALVANDO CONFIGURAÇÃO DE OPORTUNIDADE E CAMPOS
         $app->hook('POST(seal.saveCuidarMelhor)', function() use($app){
 
             $seal = $app->repo('Seal')->find($this->data['id']);
@@ -109,6 +110,7 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
             
         });
         
+        //HOOK PARA PREENCHER O SEGUNDO SELECT (CAMPOS)
         $app->hook('GET(seal.fieldSelect)', function() use($app){
             $seal = $app->repo('Seal')->find($this->data['id']);
             $sealMeta = $app->repo('SealMeta')->findBy([
@@ -130,6 +132,26 @@ class Plugin extends \SealModelTab\SealModelTemplatePlugin {
             }
            
         });
+
+        //HOOK PARA CONSULTAR AO CARREGAR A PÁGINA DO SELO SE JÁ TEM ALGUMA CONFIGURAÇÃO DE OPORTUNIDADE E CAMPOS
+        //CASO TENHA VALOR ENVIA PARA O .JS CARREGAR OS SELECTS
+        $app->hook('GET(opportunity.sealOpportunity)', function() use($app){
+            $sealMeta = $app->repo('SealMeta')->findBy([
+                'owner' => $this->data['id']
+            ]);
+
+            $fieldSeal = [];
+            foreach ($sealMeta as $key => $value) {
+                $fieldSeal[$key] = ['field' => $value->key , 'value' => $value->value];
+            }
+
+            if(isset($fieldSeal)) {
+                $this->json($fieldSeal);
+            }else{
+                $this->errorJson('Um erro inexperado.');
+            }
+        });
+        
    }
 
     public function register() {

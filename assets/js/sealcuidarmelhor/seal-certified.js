@@ -1,13 +1,46 @@
 $(document).ready(function () {
-    $("#divOptionFieldsSealOpportunity").hide();
+    //$("#divOptionFieldsSealOpportunity").hide();
     $(".close-field-seal").hide();
     getNameFieldSealRelation();
+    //POPULANDO O SELECT SE JÁ TIVER ALGO NO BANCO
+    getOpportunity();
 
     $("#selectOpportunitySeal").change(function (e) {         
         e.preventDefault();
         var sel = $("#selectOpportunitySeal").val();
-       // return;
-        $("#sealOpportunityFields").prepend("<option value='' selected='selected'>-- Selecione --</option>");       
+       getFieldOption(sel);
+    });
+
+    /**
+     * SE TIVER DADOS NO DB, CARREGA OS SELECTS AO ENTRAR NA PÁGINA DE EDIÇÃO DE SELOS
+     */
+    function getOpportunity() {
+        var idSeal = MapasCulturais.entity.id;
+        $.ajax({
+            type: "GET",
+            url: MapasCulturais.baseURL + 'opportunity/sealOpportunity',
+            data: { id: idSeal},
+            dataType: "json",
+            success: function (response) {
+               
+                $.each(response, function (indexInArray, valElement) { 
+                    console.log({indexInArray})
+                    if(valElement.field == 'opportunity') {
+                        getFieldOption(valElement.value);
+                        
+                        $('#selectOpportunitySeal option[value='+valElement.value+']').attr('selected','selected');
+                    }
+                    if(valElement.field == 'field') {
+                        console.log(valElement.value)
+                        $('#sealOpportunityFields option[value='+valElement.value+']').attr('selected','selected');
+                    }
+                });
+            }
+        });
+    }
+
+    function getFieldOption(sel) {
+             
         $.ajax({
             type: "GET",
             url: MapasCulturais.baseURL + 'opportunity/allField',
@@ -23,7 +56,7 @@ $(document).ready(function () {
                 });
             }
         });
-    });
+    }
 
     $("#btnSaveOptionFieldSeal").click(function (e) { 
         e.preventDefault();
@@ -62,7 +95,6 @@ $(document).ready(function () {
                     $(".close-field-seal").show();
                     $("#btnSaveOptionFieldSeal").hide();
                 }
-                
             }
         });
     }

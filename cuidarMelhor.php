@@ -27,14 +27,15 @@ if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
 </head>
 <body>
 
-<table width="100%" style="height: 100px;">
+<table width="100%" class="mrg-50-left" style="height: 100px;">
     <thead>
         <tr class="">
             <td>                   
                 <img src="<?php echo PLUGINS_PATH.'PDFReport/assets/img/logo-saude.png'; ?>" style="float:left;"/>
             </td>
             <td>
-            <img src="<?php echo PLUGINS_PATH.'PDFReport/assets/img/ESP-CE-ORGAO-SEC-INVERTIDA-WEB2_3.png'; ?>" style="margin-left: 300px;" alt="">
+            <img src="<?php echo PLUGINS_PATH.'PDFReport/assets/img/ESP-CE-ORGAO-SEC-INVERTIDA-WEB2_3.png'; ?>"
+             style="margin-left: 350px;" alt="">
             </td>
         </tr>
     </thead>
@@ -51,13 +52,13 @@ if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
 </div>
 
 <div>
-    <p class="color-label-cuidar-melhor text-left">
+    <p class="color-label-cuidar-melhor text-left mrg-50-left mrg-50-right">
     <?php if(isset($msg) && $msg !== '') {
         echo $msg;
     } ?>
     </p>
 </div>
-<div style=" margin-top: 136px;">
+<div style=" margin-top: 136px;" class="mrg-50-left mrg-50-right">
     <table style="width: 100%;">
         <tr>
             <td  style="width: 5%;"></td>
@@ -76,7 +77,7 @@ if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
         </tr>
     </table>
 </div>
-<div style=" margin-top: 90px;">
+<div style=" margin-top: 90px;" class="mrg-50-left mrg-50-right">
     <table style="width: 100%;">
         <tr>
             <td  style="width: 30%;" >
@@ -102,13 +103,7 @@ if($seal->owner_relation instanceof \MapasCulturais\Entities\Agent) {
         </tr>
     </table>
 </div>
-<footer>
-<img src="<?php echo PLUGINS_PATH.'SealCuidarMelhor/assets/img/sealcuidarmelhor/rodape.png'; ?>" style=" width: 100%;">
-</footer>
 </body>
 </html>
-<?php
-
-?>
 
 
